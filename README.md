@@ -64,6 +64,7 @@ packages/
 
 ルートでは Bun workspaces、mise のツール管理とタスク実行、共通 TypeScript 設定を扱います。
 `packages/shared` には、Web と API の両方で使う schema、型、ドメインロジックだけを置きます。
+依存関係は `latest` を指定せず、各 `package.json` と `bun.lock` で固定します。
 
 ## デプロイ構成
 
@@ -96,6 +97,38 @@ Worker API は次を担当します。
 
 D1 には初期段階では候補地、メモ、調査結果、API キャッシュを保存します。
 候補地 1 件の調査体験が役に立つ前に、大規模な空間分析基盤は作りません。
+
+## 開発
+
+必要なツールは mise で管理します。
+
+```sh
+mise install
+mise run dev
+```
+
+開発サーバーは Cloudflare Vite plugin を通して Web UI と Worker API を一緒に起動します。
+初期 API として `GET /api/health` を用意しています。
+
+依存関係を入れ直すときは lockfile を使います。
+
+```sh
+mise run install
+```
+
+変更前後の確認は次でまとめて実行します。
+
+```sh
+mise run check
+```
+
+`check` は Oxfmt、Oxlint、TypeScript、Vitest、Cloudflare 用 build を順に確認します。
+
+D1 の schema 変更では Drizzle の migration を生成します。
+
+```sh
+mise run db:generate
+```
 
 ## 初期スコープ外
 
