@@ -1,50 +1,46 @@
 # reinfo
 
-`reinfo` is a land research tool for evaluating candidate sites for a
-detached house in Japan.
+`reinfo` は、戸建てを建てるための土地探しで、候補地の一次調査を短縮するためのツールです。
 
-The first product goal is narrow: given one candidate land listing, shorten
-the repeated research needed to understand what the place is like before
-deciding whether to visit, ask follow-up questions, or move on.
+まずは候補地を 1 件入力し、その場所で暮らす・建てる・検討を進めるうえで確認したい情報をまとめます。
+現地を見るか、仲介会社へ追加確認するか、保留するか、見送るかを判断する前段の調査を速くすることが最初の目的です。
 
 ## MVP
 
-The MVP focuses on a single candidate site at a time.
+MVP は候補地 1 件の調査に絞ります。
 
-Input:
+### 入力
 
-- Address or latitude/longitude
-- Listing price
-- Land area
-- Listing URL
-- Notes
+- 住所または緯度経度
+- 販売価格
+- 土地面積
+- 物件 URL
+- メモ
 
-Initial report areas:
+### 初期レポート
 
-- Buildability: zoning, building coverage ratio, floor area ratio, fire
-  prevention constraints, and planning items that need follow-up
-- Hazards: flood, landslide, large-scale embankment, liquefaction, and
-  regionally relevant tsunami or storm surge information
-- Daily life: school districts, nearby childcare, medical, park, library, and
-  public facility information
-- Population: nearby future population mesh data as supporting context
-- Price context: listing price per tsubo, nearby transaction references, and
-  nearby official land price references
-- Map: candidate pin and switchable layers for the above research
+- 建築: 用途地域、建ぺい率、容積率、防火・準防火、追加確認が必要な都市計画情報
+- 防災: 洪水、土砂、大規模盛土造成地、液状化、地域に応じた津波・高潮
+- 暮らし: 小学校区、中学校区、保育施設、医療機関、公園、図書館、公共施設
+- 人口: 候補地周辺の将来人口メッシュ
+- 価格感: 販売坪単価、周辺の土地取引情報、近隣の地価公示・地価調査
+- 地図: 候補地ピンと、調査レイヤーの切り替え表示
 
-The MVP should summarize research results and keep explicit follow-up notes.
-Public datasets and API responses are inputs to investigation, not a final
-purchase or construction judgement.
+MVP は API の取得結果を並べるだけでなく、調査サマリーと追加確認メモを残せる状態を目指します。
+公開データや API レスポンスは調査の入口であり、購入判断や建築可否の最終判断そのものにはしません。
 
-## Stack
+## 技術スタック
 
-The project uses a Cloudflare-first stack:
+Cloudflare をインフラの中心に置き、次の構成で進めます。
 
+- Bun
+- mise
+- Oxc
 - React
 - Vite
 - TypeScript
 - Cloudflare Workers
-- Hono for Worker API routes
+- Hono
 - Cloudflare D1
 - Drizzle ORM
 - MapLibre GL JS
@@ -52,58 +48,64 @@ The project uses a Cloudflare-first stack:
 - Vitest
 - Playwright
 
-## Monorepo
+## リポジトリ構成
 
-The repository is a monorepo.
-
-The expected shape is:
+コードは Web、API、共有コードで分けます。
+ただし Cloudflare へのデプロイ単位は最初は 1 つの Worker にまとめます。
 
 ```text
 apps/
-  web/        React + Vite application and map UI
-  worker/     Hono API deployed to Cloudflare Workers
+  web/            React + Vite の Web UI
+  api/            Hono の Worker API
+  wrangler.jsonc  Web assets と API entry を束ねる Cloudflare 設定
 packages/
-  shared/     Shared schemas, domain types, and utilities
+  shared/         Zod schema、ドメイン型、API 契約
 ```
 
-The exact package boundaries can evolve while the first vertical slice is
-built. Shared code should move into `packages/shared` only when both the web
-app and Worker need it.
+ルートでは Bun workspaces、mise のツール管理とタスク実行、共通 TypeScript 設定を扱います。
+`packages/shared` には、Web と API の両方で使う schema、型、ドメインロジックだけを置きます。
 
-## Architecture
+## デプロイ構成
 
-The browser talks to the project API, not directly to the Real Estate
-Information Library API.
+初版は Cloudflare Worker を 1 つだけデプロイします。
+
+- `apps/api` を Worker entry にする
+- `apps/web` の build output を Static Assets として同じ Worker に載せる
+- `/api/*` は Hono が処理する
+- それ以外は Web UI を配信する
 
 ```text
-React web app
-  -> Hono Worker API
-    -> Real Estate Information Library API
-    -> Cloudflare D1
+Browser
+  -> Web UI
+  -> /api/*
+      -> Hono Worker API
+        -> 不動産情報ライブラリ API
+        -> Cloudflare D1
 ```
 
-The Worker owns:
+ブラウザから不動産情報ライブラリ API を直接呼びません。
+API キーは Cloudflare の Secret として Worker 側で扱います。
 
-- API key handling through Cloudflare secrets
-- Calls to the Real Estate Information Library API
-- Response shaping for the UI
-- Candidate site persistence
-- Report and API response caching
+Worker API は次を担当します。
 
-D1 initially stores candidate sites, notes, generated report data, and cached
-API responses. The first version should avoid building a heavy spatial data
-platform before the single-site research workflow is useful.
+- 不動産情報ライブラリ API の呼び出し
+- UI 向けのレスポンス整形
+- 候補地の保存
+- 調査レポートと API レスポンスのキャッシュ
+- D1 への永続化
 
-## Initial Non-Goals
+D1 には初期段階では候補地、メモ、調査結果、API キャッシュを保存します。
+候補地 1 件の調査体験が役に立つ前に、大規模な空間分析基盤は作りません。
 
-- Automatic land listing collection
-- Broad area discovery and comparison dashboards
-- Precise appraisal or automated purchase recommendations
-- Childcare availability or admission difficulty modelling
-- A full spatial analytics database from day one
-- Authentication until the product needs it
+## 初期スコープ外
 
-## Work Tracking
+- 売り土地情報の自動収集
+- 広域エリア探索や比較ダッシュボード
+- 精密な査定や自動の購入推奨
+- 保育の空き状況や入園難易度の推定
+- 初日からの本格的な空間分析データベース
+- 必要になる前の認証基盤
 
-The MVP is tracked from
-[#1](https://github.com/wato787/reinfo/issues/1).
+## タスク管理
+
+MVP は [#1](https://github.com/wato787/reinfo/issues/1) から追跡します。
