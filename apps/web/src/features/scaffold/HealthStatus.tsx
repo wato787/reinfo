@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { Badge } from "../../components/Badge";
 import { healthResponseSchema, type HealthResponse } from "@reinfo/shared";
 
 type HealthState =
@@ -7,7 +8,7 @@ type HealthState =
   | { kind: "ready"; value: HealthResponse }
   | { kind: "error" };
 
-export function App() {
+export function HealthStatus() {
   const [health, setHealth] = useState<HealthState>({ kind: "loading" });
 
   useEffect(() => {
@@ -34,24 +35,22 @@ export function App() {
   }, []);
 
   return (
-    <main className="app-shell">
-      <section className="map-stage" aria-label="候補地マップ">
-        <div className="map-placeholder">
-          <span>候補地マップ</span>
-        </div>
-      </section>
-
-      <aside className="research-panel">
-        <p className="eyebrow">土地調査</p>
-        <h1>候補地を調べる土台</h1>
-        <p className="summary">まずは地図、候補地入力、調査レイヤーをここに積み上げます。</p>
-        <div className={`health health-${health.kind}`}>
-          <span>Worker API</span>
-          <strong>{formatHealth(health)}</strong>
-        </div>
-      </aside>
-    </main>
+    <div>
+      <span>Worker API</span>
+      <Badge tone={getBadgeTone(health)}>{formatHealth(health)}</Badge>
+    </div>
   );
+}
+
+function getBadgeTone(health: HealthState) {
+  switch (health.kind) {
+    case "loading":
+      return "neutral";
+    case "ready":
+      return health.value.status === "ok" ? "success" : "danger";
+    case "error":
+      return "danger";
+  }
 }
 
 function formatHealth(health: HealthState) {

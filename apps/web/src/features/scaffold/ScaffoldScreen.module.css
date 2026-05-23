@@ -1,0 +1,63 @@
+.map-placeholder {
+  display: grid;
+  min-height: calc(100vh - 40px);
+  place-items: center;
+  border: 1px solid var(--color-border-strong);
+  background:
+    linear-gradient(90deg, rgb(23 32 42 / 7%) 1px, transparent 1px),
+    linear-gradient(rgb(23 32 42 / 7%) 1px, transparent 1px), var(--color-surface-muted);
+  background-size: 72px 72px;
+  color: #36584d;
+  font-weight: 700;
+}
+
+.eyebrow {
+  margin: 0 0 var(--space-3);
+  color: var(--color-accent);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+}
+
+.heading {
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1.08;
+}
+
+.summary {
+  margin: 18px 0 var(--space-8);
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.status-row {
+  display: flex;
+  min-height: 56px;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  border: 1px solid #d7dfdb;
+  padding: 0 var(--space-4);
+}
+
+.status-row > div {
+  display: contents;
+}
+
+.status-row span {
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 760px) {
+  .map-placeholder {
+    min-height: 52vh;
+  }
+}

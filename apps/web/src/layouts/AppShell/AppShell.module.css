@@ -1,0 +1,20 @@
+.root {
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, var(--panel-width));
+}
+
+.map-stage {
+  min-height: 100vh;
+  padding: var(--space-5);
+}
+
+@media (max-width: 760px) {
+  .root {
+    grid-template-columns: 1fr;
+  }
+
+  .map-stage {
+    min-height: auto;
+  }
+}
