@@ -30,13 +30,6 @@ src/
       index.ts
       __tests__/
         Button.test.tsx
-  layouts/
-    AppShell/
-      AppShell.tsx
-      AppShell.module.css
-      index.ts
-      __tests__/
-        AppShell.test.tsx
   styles/
     globals.css
     tokens.css
