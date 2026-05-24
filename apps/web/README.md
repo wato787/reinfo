@@ -30,6 +30,12 @@ src/
       index.ts
       __tests__/
         Button.test.tsx
+    Field/
+      Field.tsx
+      Field.module.css
+      index.ts
+      __tests__/
+        Field.test.tsx
   styles/
     globals.css
     tokens.css
@@ -75,3 +81,17 @@ export type { ButtonProps } from "./Button";
 ```
 
 上位階層の大きな barrel file は、必要になるまで作りません。
+
+## フォーム
+
+フォーム入力は `Field` と入力 primitive を組み合わせます。
+
+```tsx
+<Field label="緯度" description="候補地の緯度を入力します">
+  <Input inputMode="decimal" />
+</Field>
+```
+
+- `Field`: label、description、error の表示とアクセシビリティの紐付け
+- `Input`: 1 行入力
+- `Textarea`: 複数行入力
