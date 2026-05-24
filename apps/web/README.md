@@ -84,14 +84,19 @@ export type { ButtonProps } from "./Button";
 
 ## フォーム
 
-フォーム入力は `Field` と入力 primitive を組み合わせます。
+フォーム入力は `Field` の composition と入力 primitive を組み合わせます。
 
 ```tsx
-<Field label="緯度" description="候補地の緯度を入力します">
+<Field>
+  <FieldLabel>緯度</FieldLabel>
   <Input inputMode="decimal" />
+  <FieldDescription>候補地の緯度を入力します</FieldDescription>
 </Field>
 ```
 
 - `Field`: label、description、error の表示とアクセシビリティの紐付け
+- `FieldLabel`: 入力のラベル
+- `FieldDescription`: 補助説明
+- `FieldError`: エラー表示
 - `Input`: 1 行入力
 - `Textarea`: 複数行入力

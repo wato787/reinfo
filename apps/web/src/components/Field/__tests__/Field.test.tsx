@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { Field } from "../Field";
+import { Field, FieldDescription, FieldError, FieldLabel } from "../Field";
 
 describe("Field", () => {
-  it("is exported as a React component", () => {
+  it("exports composable React components", () => {
     expect(Field).toBeTypeOf("function");
+    expect(FieldLabel).toBeTypeOf("function");
+    expect(FieldDescription).toBeTypeOf("function");
+    expect(FieldError).toBeTypeOf("function");
   });
 });

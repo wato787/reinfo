@@ -1,29 +1,39 @@
 import { Field as BaseField } from "@base-ui/react/field";
-import type { ReactNode } from "react";
 
 import styles from "./Field.module.css";
 
-export type FieldProps = {
-  children: ReactNode;
-  description?: ReactNode;
-  error?: ReactNode;
-  label: ReactNode;
-  name?: string;
-};
+export type FieldProps = BaseField.Root.Props;
+export type FieldLabelProps = BaseField.Label.Props;
+export type FieldDescriptionProps = BaseField.Description.Props;
+export type FieldErrorProps = BaseField.Error.Props;
 
-export function Field({ children, description, error, label, name }: FieldProps) {
+export function Field({ className, ...props }: FieldProps) {
   return (
-    <BaseField.Root className={styles.root} invalid={Boolean(error)} name={name}>
-      <BaseField.Label className={styles.label}>{label}</BaseField.Label>
-      {children}
-      {description ? (
-        <BaseField.Description className={styles.description}>{description}</BaseField.Description>
-      ) : null}
-      {error ? (
-        <BaseField.Error className={styles.error} match>
-          {error}
-        </BaseField.Error>
-      ) : null}
-    </BaseField.Root>
+    <BaseField.Root className={[styles.root, className].filter(Boolean).join(" ")} {...props} />
+  );
+}
+
+export function FieldLabel({ className, ...props }: FieldLabelProps) {
+  return (
+    <BaseField.Label className={[styles.label, className].filter(Boolean).join(" ")} {...props} />
+  );
+}
+
+export function FieldDescription({ className, ...props }: FieldDescriptionProps) {
+  return (
+    <BaseField.Description
+      className={[styles.description, className].filter(Boolean).join(" ")}
+      {...props}
+    />
+  );
+}
+
+export function FieldError({ className, match = true, ...props }: FieldErrorProps) {
+  return (
+    <BaseField.Error
+      className={[styles.error, className].filter(Boolean).join(" ")}
+      match={match}
+      {...props}
+    />
   );
 }
