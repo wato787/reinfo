@@ -2,7 +2,7 @@
   display: flex;
   min-height: 100vh;
   flex-direction: column;
-  justify-content: center;
+  overflow-y: auto;
   border-left: 1px solid var(--color-border);
   background: var(--color-surface);
   padding: clamp(var(--space-8), 6vw, var(--space-14));
