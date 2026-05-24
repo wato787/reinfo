@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
-import { ScaffoldScreen } from "./features/scaffold/ScaffoldScreen";
+import { Scaffold } from "./views/Scaffold/Scaffold";
 import "./styles/globals.css";
 
 const root = document.getElementById("root");
@@ -12,6 +12,6 @@ if (!root) {
 
 createRoot(root).render(
   <StrictMode>
-    <ScaffoldScreen />
+    <Scaffold />
   </StrictMode>,
 );

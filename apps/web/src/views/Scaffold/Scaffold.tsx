@@ -2,9 +2,9 @@ import { Button } from "../../components/Button";
 import { Panel } from "../../components/Panel";
 import { AppShell } from "../../layouts/AppShell";
 import { HealthStatus } from "./HealthStatus";
-import styles from "./ScaffoldScreen.module.css";
+import styles from "./Scaffold.module.css";
 
-export function ScaffoldScreen() {
+export function Scaffold() {
   return (
     <AppShell
       map={

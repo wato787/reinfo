@@ -10,10 +10,19 @@ UI は Base UI と CSS Modules で実装します。
 
 ## ディレクトリ
 
-コンポーネントはコンポーネント単位のフォルダにまとめます。
+画面単位のコードは `views` に置きます。
+その画面でしか使わない小さな部品は view のフォルダにコロケーションします。
+複数の view で使う部品だけを `components` に置きます。
 
 ```text
 src/
+  views/
+    Scaffold/
+      Scaffold.tsx
+      Scaffold.module.css
+      HealthStatus.tsx
+      __tests__/
+        Scaffold.test.tsx
   components/
     Button/
       Button.tsx
